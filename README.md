@@ -4,6 +4,6 @@ Library golang untuk menggunakan SSO UI sebagai login JWT
 
 ## Instalasi
 
-`go get github.com/RistekCSUI/golang-uisso-jwt`
+`go get github.com/ristekoss/golang-uisso-jwt`
 
 ### Project still in proof concept stage

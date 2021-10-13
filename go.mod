@@ -1,4 +1,4 @@
-module github.com/RistekCSUI/golang-sso-ui-jwt
+module github.com/ristekoss/golang-sso-ui-jwt
 
 go 1.15
 

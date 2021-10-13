@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"time"
 
-	ssojwt "github.com/RistekCSUI/golang-sso-ui-jwt"
+	ssojwt "github.com/ristekoss/golang-sso-ui-jwt"
 )
 
 func main() {
