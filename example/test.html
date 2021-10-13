@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script defer>
+      const loginHandler = async () => {
+        const data = await popUpLogin();
+        const e = document.getElementById("res");
+        e.innerHTML = `hallo ${data.nama}`;
+        localStorage.setItem("ssoui", JSON.stringify(data));
+      };
+
+      const popUpLogin = () => {
+        const SSOWindow = window.open(
+          new URL(
+            "https://sso.ui.ac.id/cas2/login?service=http%3A%2F%2Flocalhost%3A8080%2Flogin"
+          ).toString(),
+          "SSO UI Login",
+          "left=50, top=50, width=480, height=480"
+        );
+
+        return new Promise(function (resolve, reject) {
+          window.addEventListener(
+            "message",
+            (e) => {
+              if (SSOWindow) {
+                SSOWindow.close();
+              }
+              const data = e.data;
+              console.log(data);
+              resolve(data);
+            },
+            { once: true }
+          );
+        });
+      };
+    </script>
+  </head>
+  <body>
+    <h1>ini test</h1>
+    <btn onclick="loginHandler();">click me</btn>
+    <p id="res"></p>
+  </body>
+</html>

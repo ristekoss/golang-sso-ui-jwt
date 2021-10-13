@@ -1,0 +1,5 @@
+bin
+tmp
+go.sum
+log
+.env
