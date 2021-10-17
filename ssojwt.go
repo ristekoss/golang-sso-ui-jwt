@@ -1,10 +1,8 @@
 package ssojwt
 
 import (
-	"html/template"
 	"log"
 	"net/http"
-	"path/filepath"
 	"time"
 )
 
@@ -61,16 +59,15 @@ func LoginCreator(config SSOConfig) func(w http.ResponseWriter, r *http.Request)
 			return
 		}
 
-		tempData := DataRender{
-			LoginResponse: res,
-			OriginUrl:     config.OriginUrl,
+		tmpl, dataRender, err := MakeTemplate(config, res)
+		if err != nil {
+			log.Printf("error in parsing template: %v", err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		abs, _ := filepath.Abs("../static/wait.html")
-		tmpl, err := template.ParseFiles(abs)
-		err = tmpl.Execute(w, tempData)
+		err = tmpl.Execute(w, dataRender)
 		if err != nil {
-			log.Printf("error in execute: %v", err)
+			log.Printf("error in render template: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
