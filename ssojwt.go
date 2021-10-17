@@ -51,12 +51,6 @@ func LoginCreator(config SSOConfig, errorLogger *log.Logger) func(w http.Respons
 			return
 		}
 
-		if err != nil {
-			errorLogger.Printf("error in reading json: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
 		res, err := MakeLoginResponse(config, model)
 		if err != nil {
 			errorLogger.Printf("error in creating token: %v", err)
