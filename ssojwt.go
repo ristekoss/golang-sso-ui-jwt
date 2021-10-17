@@ -1,6 +1,7 @@
 package ssojwt
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -28,46 +29,50 @@ func MakeSSOConfig(accessTokenExpireTime, refreshTokenExpireTime time.Duration, 
 	}
 }
 
-func LoginCreator(config SSOConfig) func(w http.ResponseWriter, r *http.Request) {
+func LoginCreator(config SSOConfig, errorLogger *log.Logger) func(w http.ResponseWriter, r *http.Request) {
+	if errorLogger == nil {
+		errorLogger = log.New(ioutil.Discard, "Error: ", log.Ldate|log.Ltime)
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		ticket := r.URL.Query().Get("ticket")
 		bodyBytes, err := ValidatTicket(config, ticket)
 		if err != nil {
-			log.Printf("error when cheking ticket: %v", err)
+			errorLogger.Printf("error when cheking ticket: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		model, err := Unmarshal(bodyBytes)
 		if err != nil {
-			log.Printf("error in unmarshaling: %v", err)
+			errorLogger.Printf("error in unmarshaling: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		if err != nil {
-			log.Printf("error in reading json: %v", err)
+			errorLogger.Printf("error in reading json: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		res, err := MakeLoginResponse(config, model)
 		if err != nil {
-			log.Printf("error in creating token: %v", err)
+			errorLogger.Printf("error in creating token: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		tmpl, dataRender, err := MakeTemplate(config, res)
 		if err != nil {
-			log.Printf("error in parsing template: %v", err)
+			errorLogger.Printf("error in parsing template: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
 		err = tmpl.Execute(w, dataRender)
 		if err != nil {
-			log.Printf("error in render template: %v", err)
+			errorLogger.Printf("error in render template: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return

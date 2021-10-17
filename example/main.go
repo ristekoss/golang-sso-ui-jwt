@@ -13,7 +13,7 @@ import (
 
 func main() {
 	config := ssojwt.MakeSSOConfig(time.Hour*168, time.Hour*720, "super secret", "huha huha", "http://localhost:8080/login", "http://localhost:8080/")
-	http.HandleFunc("/login", ssojwt.LoginCreator(config))
+	http.HandleFunc("/login", ssojwt.LoginCreator(config, nil))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		abs, _ := filepath.Abs("./test.html")
