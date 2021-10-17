@@ -1,12 +1,10 @@
 package ssojwt
 
 import (
-	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"path/filepath"
 )
 
 func ValidatTicket(config SSOConfig, ticket string) (bodyBytes []byte, err error) {
@@ -29,27 +27,9 @@ func Unmarshal(bodyBytes []byte) (model ServiceResponse, err error) {
 		return
 	}
 
-	data, err := ReadOrgcode()
-	if err != nil {
-		err = fmt.Errorf("error in reading json: %w", err)
-	}
+	data := ReadOrgcode()
 
 	model.AuthenticationSuccess.Attributes.Jusuran = data[model.AuthenticationSuccess.Attributes.Kd_org]
-	return
-}
-
-func ReadOrgcode() (data map[string]Jurusan, err error) {
-	abs, err := filepath.Abs("../static/orgcode.json")
-	if err != nil {
-		return
-	}
-
-	file, err := ioutil.ReadFile(abs)
-	if err != nil {
-		return
-	}
-
-	err = json.Unmarshal([]byte(file), &data)
 	return
 }
 
