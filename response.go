@@ -1,7 +1,7 @@
 package ssojwt
 
 type DataRender struct {
-	LoginResponse interface{}
+	LoginResponse string
 	OriginUrl     string
 }
 
