@@ -1,3 +1,6 @@
+package ssojwt
+
+const wait = `
 <!DOCTYPE html>
 <html>
   <head>
@@ -23,7 +26,7 @@
     <script type="application/javascript">
       (() => {
         if (window.opener) {
-          const rawData = `{{.LoginResponse}}`;
+          const rawData = "{{.LoginResponse}}";
           const data = JSON.parse(rawData);
           console.log(data);
           window.opener.postMessage(data, "{{.OriginUrl}}");
@@ -34,3 +37,4 @@
     </script>
   </body>
 </html>
+`

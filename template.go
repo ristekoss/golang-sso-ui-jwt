@@ -2,7 +2,6 @@ package ssojwt
 
 import (
 	"html/template"
-	"path/filepath"
 )
 
 func MakeTemplate(config SSOConfig, res interface{}) (tmpl *template.Template, dataRender DataRender, err error) {
@@ -11,10 +10,6 @@ func MakeTemplate(config SSOConfig, res interface{}) (tmpl *template.Template, d
 		OriginUrl:     config.OriginUrl,
 	}
 
-	abs, err := filepath.Abs("../static/wait.html")
-	if err != nil {
-		return
-	}
-	tmpl, err = template.ParseFiles(abs)
+	tmpl, err = template.New("wait").Parse(wait)
 	return
 }
