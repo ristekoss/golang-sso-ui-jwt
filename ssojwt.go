@@ -1,6 +1,7 @@
 package ssojwt
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -37,38 +38,51 @@ func LoginCreator(config SSOConfig, errorLogger *log.Logger) func(w http.Respons
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		ticket := r.URL.Query().Get("ticket")
-		bodyBytes, err := ValidatTicket(config, ticket)
+		res, err := LoginRequestHandler(ticket, config)
 		if err != nil {
-			errorLogger.Printf("error when cheking ticket: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		model, err := Unmarshal(bodyBytes)
-		if err != nil {
-			errorLogger.Printf("error in unmarshaling: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		res, err := MakeLoginResponse(config, model)
-		if err != nil {
-			errorLogger.Printf("error in creating token: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		tmpl, dataRender, err := MakeTemplate(config, res)
-		if err != nil {
-			errorLogger.Printf("error in parsing template: %v", err)
+			errorLogger.Printf("error in pasing sso request: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		err = tmpl.Execute(w, dataRender)
+		err = TemplateRenderHandler(res, config, w)
 		if err != nil {
 			errorLogger.Printf("error in render template: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
 	}
+}
+
+func LoginRequestHandler(ticket string, config SSOConfig) (res LoginResponse, err error) {
+	bodyBytes, err := ValidatTicket(config, ticket)
+	if err != nil {
+		err = fmt.Errorf("error when cheking ticket: %w", err)
+		return
+	}
+
+	model, err := Unmarshal(bodyBytes)
+	if err != nil {
+		err = fmt.Errorf("error in unmarshaling: %w", err)
+		return
+	}
+
+	res, err = MakeLoginResponse(config, model)
+	if err != nil {
+		err = fmt.Errorf("error in creating token: %w", err)
+	}
+	return
+}
+
+func TemplateRenderHandler(data interface{}, config SSOConfig, w http.ResponseWriter) (err error) {
+	tmpl, dataRender, err := MakeTemplate(config, data)
+	if err != nil {
+		err = fmt.Errorf("error in making template: %w", err)
+		return
+	}
+
+	err = tmpl.Execute(w, dataRender)
+	if err != nil {
+		err = fmt.Errorf("error in parsing template: %w", err)
+	}
+	return
 }

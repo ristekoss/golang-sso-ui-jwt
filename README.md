@@ -10,6 +10,5 @@ Library golang untuk menggunakan SSO UI sebagai login JWT
 
 ### Todos
 
-- decouple creating interface and rendering html
 - make check jwt middleware
 - create better readme.md
