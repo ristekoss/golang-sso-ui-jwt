@@ -12,18 +12,21 @@ type SSOJwtClaim struct {
 	User    string  `json:"user"`
 	Npm     string  `json:"npm"`
 	Jusuran Jurusan `json:"jurusan"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 func CreateAccessToken(config SSOConfig, ssoResponse ServiceResponse) (token string, err error) {
+	RegisteredClaims := jwt.RegisteredClaims{
+		IssuedAt:  &jwt.NumericDate{Time: time.Now()},
+		ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(config.AccessTokenExpireTime)},
+	}
+
 	claims := &SSOJwtClaim{
-		Nama:    ssoResponse.AuthenticationSuccess.Attributes.Nama,
-		User:    ssoResponse.AuthenticationSuccess.User,
-		Npm:     ssoResponse.AuthenticationSuccess.Attributes.Npm,
-		Jusuran: ssoResponse.AuthenticationSuccess.Attributes.Jusuran,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(config.AccessTokenExpireTime).Unix(),
-		},
+		Nama:             ssoResponse.AuthenticationSuccess.Attributes.Nama,
+		User:             ssoResponse.AuthenticationSuccess.User,
+		Npm:              ssoResponse.AuthenticationSuccess.Attributes.Npm,
+		Jusuran:          ssoResponse.AuthenticationSuccess.Attributes.Jusuran,
+		RegisteredClaims: RegisteredClaims,
 	}
 
 	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -36,14 +39,17 @@ func CreateAccessToken(config SSOConfig, ssoResponse ServiceResponse) (token str
 }
 
 func CreateRefreshToken(config SSOConfig, ssoResponse ServiceResponse) (token string, err error) {
+	RegisteredClaims := jwt.RegisteredClaims{
+		IssuedAt:  &jwt.NumericDate{Time: time.Now()},
+		ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(config.RefreshTokenExpireTime)},
+	}
+
 	claims := &SSOJwtClaim{
-		Nama:    ssoResponse.AuthenticationSuccess.Attributes.Nama,
-		User:    ssoResponse.AuthenticationSuccess.User,
-		Npm:     ssoResponse.AuthenticationSuccess.Attributes.Npm,
-		Jusuran: ssoResponse.AuthenticationSuccess.Attributes.Jusuran,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(config.RefreshTokenExpireTime).Unix(),
-		},
+		Nama:             ssoResponse.AuthenticationSuccess.Attributes.Nama,
+		User:             ssoResponse.AuthenticationSuccess.User,
+		Npm:              ssoResponse.AuthenticationSuccess.Attributes.Npm,
+		Jusuran:          ssoResponse.AuthenticationSuccess.Attributes.Jusuran,
+		RegisteredClaims: RegisteredClaims,
 	}
 
 	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
