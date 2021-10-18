@@ -16,9 +16,11 @@ type SSOJwtClaim struct {
 }
 
 func CreateAccessToken(config SSOConfig, ssoResponse ServiceResponse) (token string, err error) {
-	RegisteredClaims := jwt.RegisteredClaims{
-		IssuedAt:  &jwt.NumericDate{Time: time.Now()},
-		ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(config.AccessTokenExpireTime)},
+	RegisteredClaims := jwt.RegisteredClaims{}
+	if config.AccessTokenExpireTime != 0 {
+		RegisteredClaims = jwt.RegisteredClaims{
+			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(config.AccessTokenExpireTime)},
+		}
 	}
 
 	claims := &SSOJwtClaim{
@@ -33,15 +35,16 @@ func CreateAccessToken(config SSOConfig, ssoResponse ServiceResponse) (token str
 	token, err = rawToken.SignedString([]byte(config.AccessTokenSecretKey))
 	if err != nil {
 		err = fmt.Errorf("token signing error: %w", err)
-		return
 	}
 	return
 }
 
 func CreateRefreshToken(config SSOConfig, ssoResponse ServiceResponse) (token string, err error) {
-	RegisteredClaims := jwt.RegisteredClaims{
-		IssuedAt:  &jwt.NumericDate{Time: time.Now()},
-		ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(config.RefreshTokenExpireTime)},
+	RegisteredClaims := jwt.RegisteredClaims{}
+	if config.RefreshTokenExpireTime != 0 {
+		RegisteredClaims = jwt.RegisteredClaims{
+			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(config.RefreshTokenExpireTime)},
+		}
 	}
 
 	claims := &SSOJwtClaim{
@@ -55,7 +58,7 @@ func CreateRefreshToken(config SSOConfig, ssoResponse ServiceResponse) (token st
 	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err = rawToken.SignedString([]byte(config.RefreshTokenSecretKey))
 	if err != nil {
-		return "", fmt.Errorf("token signing error: %w", err)
+		err = fmt.Errorf("token signing error: %w", err)
 	}
 	return
 }

@@ -9,7 +9,7 @@
       const loginHandler = async () => {
         const data = await popUpLogin();
         const e = document.getElementById("res");
-        e.innerHTML = `hallo ${data.nama}`;
+        e.innerHTML = `hallo ${data.access_token}`;
         localStorage.setItem("ssoui", JSON.stringify(data));
       };
 
