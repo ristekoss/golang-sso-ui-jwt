@@ -11,7 +11,7 @@ see example folder
 
 
 login handler
-```
+```go
 // set config
 config := ssojwt.MakeSSOConfig(time.Hour*168, time.Hour*720, "super secret access", "super secret refresh", "http://localhost:8080/login", "http://localhost:8080/")
 
@@ -23,7 +23,7 @@ http.HandleFunc("/login", authMiddleware)
 ```
 
 on the frontend
-```
+```js
 const loginHandler = async () => {
   const data = await popUpLogin();
   const e = document.getElementById("res");
@@ -59,7 +59,7 @@ const popUpLogin = () => {
 ```
 
 authenticated middleware
-```
+```go
 // set config
 config := ssojwt.MakeSSOConfig(time.Hour*168, time.Hour*720, "super secret access", "super secret refresh", "http://localhost:8080/login", "http://localhost:8080/")
 
@@ -73,7 +73,7 @@ http.Handle("/check", auth)
 ```
 
 authenticated middleware
-```
+```go
 // set config
 config := ssojwt.MakeSSOConfig(time.Hour*168, time.Hour*720, "super secret access", "super secret refresh", "http://localhost:8080/login", "http://localhost:8080/")
 
