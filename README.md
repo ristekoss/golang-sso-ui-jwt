@@ -71,8 +71,19 @@ auth := middle(handler)
 
 http.Handle("/check", auth)
 ```
+
+authenticated middleware
+```
+// set config
+config := ssojwt.MakeSSOConfig(time.Hour*168, time.Hour*720, "super secret access", "super secret refresh", "http://localhost:8080/login", "http://localhost:8080/")
+
+// create middleware
+middle := ssojwt.MakeRefreshTokenMiddleware(config)
+
+// use handler func
+http.Handle("/refresh", middle)
+```
 ### To-dos
 
 - create fiber handler
-- create refresh token middleware
 - create better readme.md
