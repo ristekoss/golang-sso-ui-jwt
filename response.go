@@ -6,11 +6,11 @@ type DataRender struct {
 }
 
 type LoginResponse struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-	Nama         string `json:"nama,omitempty"`
-	Npm          string `json:"npm,omitempty"`
-	Fakultas     string `json:"fakultas,omitempty"`
+	AccessToken  string  `json:"access_token"`
+	RefreshToken string  `json:"refresh_token"`
+	Nama         string  `json:"nama,omitempty"`
+	Npm          string  `json:"npm,omitempty"`
+	Fakultas     Jurusan `json:"fakultas,omitempty"`
 }
 
 func MakeLoginResponse(config SSOConfig, model ServiceResponse) (res LoginResponse, err error) {
@@ -28,7 +28,7 @@ func MakeLoginResponse(config SSOConfig, model ServiceResponse) (res LoginRespon
 		RefreshToken: refreshToken,
 		Nama:         model.AuthenticationSuccess.Attributes.Nama,
 		Npm:          model.AuthenticationSuccess.Attributes.Npm,
-		Fakultas:     model.AuthenticationSuccess.Attributes.Jusuran.Faculty,
+		Fakultas:     model.AuthenticationSuccess.Attributes.Jusuran,
 	}
 	return
 }

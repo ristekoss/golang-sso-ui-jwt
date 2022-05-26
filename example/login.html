@@ -9,9 +9,23 @@
       const loginHandler = async () => {
         const data = await popUpLogin();
         const e = document.getElementById("res");
-        e.innerHTML = `hallo ${data.access_token}`;
+        e.innerHTML = JSON.stringify(data, null, 2);
         localStorage.setItem("ssoui", JSON.stringify(data));
       };
+
+      const localDataHandler = async () => {
+        const token = JSON.parse(localStorage.getItem("ssoui")).access_token;
+
+        const res = await fetch("/check", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const data = await res.json();
+        const e = document.getElementById("res");
+        console.log(data);
+        e.innerHTML = JSON.stringify(data, null, 2);
+      }
 
       const popUpLogin = () => {
         const SSOWindow = window.open(
@@ -41,7 +55,9 @@
   </head>
   <body>
     <h1>ini test</h1>
-    <btn onclick="loginHandler();">click me</btn>
+    <btn onclick="loginHandler();">login</btn>
     <p id="res"></p>
+
+    <btn onclick="localDataHandler();">check stored data</btn>
   </body>
 </html>

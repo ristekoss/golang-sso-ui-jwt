@@ -2,6 +2,7 @@ package ssojwt
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -13,8 +14,9 @@ func MakeAccessTokenMiddleware(config SSOConfig, key string) func(nextHandler ht
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			authorization := r.Header.Get("Authorization")
 			AuthorizationMap := strings.Split(authorization, " ")
-			if len(AuthorizationMap) < 2 {
-				nextHandler.ServeHTTP(w, r)
+			if len(AuthorizationMap) != 2 {
+				w.WriteHeader(http.StatusUnauthorized)
+				fmt.Fprintf(w, "{\"error\": \"invalid_token\"}")
 				return
 			}
 			tokenString := AuthorizationMap[1]
@@ -22,7 +24,8 @@ func MakeAccessTokenMiddleware(config SSOConfig, key string) func(nextHandler ht
 				return []byte(config.AccessTokenSecretKey), nil
 			})
 			if err != nil {
-				nextHandler.ServeHTTP(w, r)
+				w.WriteHeader(http.StatusUnauthorized)
+				fmt.Fprintf(w, "{\"error\": \"invalid_token\"}")
 				return
 			}
 			ctx := r.Context()
