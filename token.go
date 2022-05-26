@@ -11,7 +11,7 @@ type SSOJwtClaim struct {
 	Nama    string  `json:"nama"`
 	User    string  `json:"user"`
 	Npm     string  `json:"npm"`
-	Jusuran Jurusan `json:"jurusan"`
+	Jurusan Jurusan `json:"jurusan"`
 	jwt.RegisteredClaims
 }
 
@@ -27,7 +27,7 @@ func CreateAccessToken(config SSOConfig, ssoResponse ServiceResponse) (token str
 		Nama:             ssoResponse.AuthenticationSuccess.Attributes.Nama,
 		User:             ssoResponse.AuthenticationSuccess.User,
 		Npm:              ssoResponse.AuthenticationSuccess.Attributes.Npm,
-		Jusuran:          ssoResponse.AuthenticationSuccess.Attributes.Jusuran,
+		Jurusan:          ssoResponse.AuthenticationSuccess.Attributes.Jurusan,
 		RegisteredClaims: RegisteredClaims,
 	}
 
@@ -51,7 +51,7 @@ func CreateRefreshToken(config SSOConfig, ssoResponse ServiceResponse) (token st
 		Nama:             ssoResponse.AuthenticationSuccess.Attributes.Nama,
 		User:             ssoResponse.AuthenticationSuccess.User,
 		Npm:              ssoResponse.AuthenticationSuccess.Attributes.Npm,
-		Jusuran:          ssoResponse.AuthenticationSuccess.Attributes.Jusuran,
+		Jurusan:          ssoResponse.AuthenticationSuccess.Attributes.Jurusan,
 		RegisteredClaims: RegisteredClaims,
 	}
 

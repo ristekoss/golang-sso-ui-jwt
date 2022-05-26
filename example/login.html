@@ -26,6 +26,22 @@
         console.log(data);
         e.innerHTML = JSON.stringify(data, null, 2);
       }
+      
+      const refreshTokenHandler = async () => {
+        var user = JSON.parse(localStorage.getItem("ssoui"));
+        const res = await fetch("/refresh", {
+          headers: {
+            Authorization: `Bearer ${user.refresh_token}`
+          }
+        });
+        const data = await res.json();
+        user = {...user, ...data};
+        localStorage.setItem("ssoui", JSON.stringify(user));
+
+        const e = document.getElementById("res");
+        console.log(data);
+        e.innerHTML = JSON.stringify(data, null, 2);
+      }
 
       const popUpLogin = () => {
         const SSOWindow = window.open(
@@ -58,6 +74,8 @@
     <btn onclick="loginHandler();">login</btn>
     <p id="res"></p>
 
-    <btn onclick="localDataHandler();">check stored data</btn>
+    <btn onclick="localDataHandler();">check stored data</btn> <br/>
+    
+    <btn onclick="refreshTokenHandler();">refresh token</btn> <br/>
   </body>
 </html>

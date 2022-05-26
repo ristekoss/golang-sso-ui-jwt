@@ -29,7 +29,7 @@ func Unmarshal(bodyBytes []byte) (model ServiceResponse, err error) {
 
 	data := ReadOrgcode()
 
-	model.AuthenticationSuccess.Attributes.Jusuran = data[model.AuthenticationSuccess.Attributes.Kd_org]
+	model.AuthenticationSuccess.Attributes.Jurusan = data[model.AuthenticationSuccess.Attributes.Kd_org]
 	return
 }
 
@@ -51,7 +51,7 @@ type Attributes struct {
 	Peran_user string   `xml:"peran_user" json:"peran_user"`
 	Nama       string   `xml:"nama" json:"nama"`
 	Npm        string   `xml:"npm" json:"npm"`
-	Jusuran    Jurusan  `json:"jurusan"`
+	Jurusan    Jurusan  `json:"jurusan"`
 }
 
 type Jurusan struct {
